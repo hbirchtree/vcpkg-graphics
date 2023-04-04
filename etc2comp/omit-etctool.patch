@@ -1,0 +1,235 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 6a6392b..bba5428 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -16,14 +16,4 @@ cmake_minimum_required(VERSION 2.8.9)
+ project(EtcTest)
+ 
+ set (CMAKE_CXX_STANDARD 11)
+-IF (APPLE)
+-	set (CMAKE_CXX_FLAGS "-I/usr/include/i386-linux-gnu/c++/4.8 -I/usr/include/c++/4.8 -std=c++11 -g3 -Wall -O3")
+-ELSE ()
+-	IF (WIN32)
+-		set (CMAKE_CXX_FLAGS "-I/usr/include/i386-linux-gnu/c++/4.8 -I/usr/include/c++/4.8 -W4 /EHsc")
+-	ELSE()
+-		set (CMAKE_CXX_FLAGS "-I/usr/include/i386-linux-gnu/c++/4.8 -I/usr/include/c++/4.8 -std=c++11 -pthread -g3 -Wall -O2")
+-	ENDIF()
+-ENDIF ()
+ ADD_SUBDIRECTORY(EtcLib)
+-ADD_SUBDIRECTORY(EtcTool)
+diff --git a/EtcLib/CMakeLists.txt b/EtcLib/CMakeLists.txt
+index b584b88..cbb47f4 100644
+--- a/EtcLib/CMakeLists.txt
++++ b/EtcLib/CMakeLists.txt
+@@ -13,12 +13,63 @@
+ # limitations under the License.
+ 
+ project(EtcLib)
+-include_directories(./Etc)
+-include_directories(./EtcCodec)
+ 
+-file(GLOB SOURCES
+-	${PROJECT_SOURCE_DIR}/Etc/*.h
+-	${PROJECT_SOURCE_DIR}/EtcCodec/*.h
+-	${PROJECT_SOURCE_DIR}/Etc/*.cpp
+-	${PROJECT_SOURCE_DIR}/EtcCodec/*.cpp)
+-ADD_LIBRARY(EtcLib ${SOURCES})
++add_library(EtcLib STATIC
++    src/EtcBlock4x4.cpp
++    src/EtcBlock4x4Encoding.cpp
++    src/EtcBlock4x4Encoding_ETC1.cpp
++    src/EtcBlock4x4Encoding_R11.cpp
++    src/EtcBlock4x4Encoding_RG11.cpp
++    src/EtcBlock4x4Encoding_RGB8A1.cpp
++    src/EtcBlock4x4Encoding_RGB8.cpp
++    src/EtcBlock4x4Encoding_RGBA8.cpp
++    src/Etc.cpp
++    src/EtcDifferentialTrys.cpp
++    src/EtcFilter.cpp
++    src/EtcImage.cpp
++    src/EtcIndividualTrys.cpp
++    src/EtcMath.cpp
++    src/EtcSortedBlockList.cpp
++    )
++target_include_directories ( EtcLib PRIVATE
++    ${CMAKE_CURRENT_SOURCE_DIR}/include/Etc
++    ${CMAKE_CURRENT_SOURCE_DIR}/include/EtcCodec
++    )
++
++install(TARGETS EtcLib EXPORT Etc2CompTargets
++    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
++    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
++    )
++install(EXPORT Etc2CompTargets
++    NAMESPACE Etc2Comp::
++    DESTINATION share/etc2comp
++    )
++
++file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/Etc2CompConfig.cmake
++    [=[
++    include(CMakeFindDependencyMacro)
++    include(${CMAKE_CURRENT_LIST_DIR}/Etc2CompTargets.cmake)
++    ]=]
++    )
++install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Etc2CompConfig.cmake
++    DESTINATION share/etc2comp
++    )
++install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/Etc
++    DESTINATION include
++    )
++install(FILES 
++        include/EtcCodec/EtcBlock4x4EncodingBits.h
++        include/EtcCodec/EtcBlock4x4Encoding_ETC1.h
++        include/EtcCodec/EtcBlock4x4Encoding.h
++        include/EtcCodec/EtcBlock4x4Encoding_R11.h
++        include/EtcCodec/EtcBlock4x4Encoding_RG11.h
++        include/EtcCodec/EtcBlock4x4Encoding_RGB8A1.h
++        include/EtcCodec/EtcBlock4x4Encoding_RGB8.h
++        include/EtcCodec/EtcBlock4x4Encoding_RGBA8.h
++        include/EtcCodec/EtcBlock4x4.h
++        include/EtcCodec/EtcDifferentialTrys.h
++        include/EtcCodec/EtcErrorMetric.h
++        include/EtcCodec/EtcIndividualTrys.h
++        include/EtcCodec/EtcSortedBlockList.h
++    DESTINATION include/Etc
++    )
+diff --git a/EtcLib/Etc/Etc.h b/EtcLib/include/Etc/Etc.h
+similarity index 100%
+rename from EtcLib/Etc/Etc.h
+rename to EtcLib/include/Etc/Etc.h
+diff --git a/EtcLib/Etc/EtcColor.h b/EtcLib/include/Etc/EtcColor.h
+similarity index 100%
+rename from EtcLib/Etc/EtcColor.h
+rename to EtcLib/include/Etc/EtcColor.h
+diff --git a/EtcLib/Etc/EtcColorFloatRGBA.h b/EtcLib/include/Etc/EtcColorFloatRGBA.h
+similarity index 100%
+rename from EtcLib/Etc/EtcColorFloatRGBA.h
+rename to EtcLib/include/Etc/EtcColorFloatRGBA.h
+diff --git a/EtcLib/Etc/EtcConfig.h b/EtcLib/include/Etc/EtcConfig.h
+similarity index 100%
+rename from EtcLib/Etc/EtcConfig.h
+rename to EtcLib/include/Etc/EtcConfig.h
+diff --git a/EtcLib/Etc/EtcFilter.h b/EtcLib/include/Etc/EtcFilter.h
+similarity index 100%
+rename from EtcLib/Etc/EtcFilter.h
+rename to EtcLib/include/Etc/EtcFilter.h
+diff --git a/EtcLib/Etc/EtcImage.h b/EtcLib/include/Etc/EtcImage.h
+similarity index 100%
+rename from EtcLib/Etc/EtcImage.h
+rename to EtcLib/include/Etc/EtcImage.h
+diff --git a/EtcLib/Etc/EtcMath.h b/EtcLib/include/Etc/EtcMath.h
+similarity index 100%
+rename from EtcLib/Etc/EtcMath.h
+rename to EtcLib/include/Etc/EtcMath.h
+diff --git a/EtcLib/EtcCodec/EtcBlock4x4.h b/EtcLib/include/EtcCodec/EtcBlock4x4.h
+similarity index 100%
+rename from EtcLib/EtcCodec/EtcBlock4x4.h
+rename to EtcLib/include/EtcCodec/EtcBlock4x4.h
+diff --git a/EtcLib/EtcCodec/EtcBlock4x4Encoding.h b/EtcLib/include/EtcCodec/EtcBlock4x4Encoding.h
+similarity index 100%
+rename from EtcLib/EtcCodec/EtcBlock4x4Encoding.h
+rename to EtcLib/include/EtcCodec/EtcBlock4x4Encoding.h
+diff --git a/EtcLib/EtcCodec/EtcBlock4x4EncodingBits.h b/EtcLib/include/EtcCodec/EtcBlock4x4EncodingBits.h
+similarity index 100%
+rename from EtcLib/EtcCodec/EtcBlock4x4EncodingBits.h
+rename to EtcLib/include/EtcCodec/EtcBlock4x4EncodingBits.h
+diff --git a/EtcLib/EtcCodec/EtcBlock4x4Encoding_ETC1.h b/EtcLib/include/EtcCodec/EtcBlock4x4Encoding_ETC1.h
+similarity index 100%
+rename from EtcLib/EtcCodec/EtcBlock4x4Encoding_ETC1.h
+rename to EtcLib/include/EtcCodec/EtcBlock4x4Encoding_ETC1.h
+diff --git a/EtcLib/EtcCodec/EtcBlock4x4Encoding_R11.h b/EtcLib/include/EtcCodec/EtcBlock4x4Encoding_R11.h
+similarity index 100%
+rename from EtcLib/EtcCodec/EtcBlock4x4Encoding_R11.h
+rename to EtcLib/include/EtcCodec/EtcBlock4x4Encoding_R11.h
+diff --git a/EtcLib/EtcCodec/EtcBlock4x4Encoding_RG11.h b/EtcLib/include/EtcCodec/EtcBlock4x4Encoding_RG11.h
+similarity index 100%
+rename from EtcLib/EtcCodec/EtcBlock4x4Encoding_RG11.h
+rename to EtcLib/include/EtcCodec/EtcBlock4x4Encoding_RG11.h
+diff --git a/EtcLib/EtcCodec/EtcBlock4x4Encoding_RGB8.h b/EtcLib/include/EtcCodec/EtcBlock4x4Encoding_RGB8.h
+similarity index 100%
+rename from EtcLib/EtcCodec/EtcBlock4x4Encoding_RGB8.h
+rename to EtcLib/include/EtcCodec/EtcBlock4x4Encoding_RGB8.h
+diff --git a/EtcLib/EtcCodec/EtcBlock4x4Encoding_RGB8A1.h b/EtcLib/include/EtcCodec/EtcBlock4x4Encoding_RGB8A1.h
+similarity index 100%
+rename from EtcLib/EtcCodec/EtcBlock4x4Encoding_RGB8A1.h
+rename to EtcLib/include/EtcCodec/EtcBlock4x4Encoding_RGB8A1.h
+diff --git a/EtcLib/EtcCodec/EtcBlock4x4Encoding_RGBA8.h b/EtcLib/include/EtcCodec/EtcBlock4x4Encoding_RGBA8.h
+similarity index 100%
+rename from EtcLib/EtcCodec/EtcBlock4x4Encoding_RGBA8.h
+rename to EtcLib/include/EtcCodec/EtcBlock4x4Encoding_RGBA8.h
+diff --git a/EtcLib/EtcCodec/EtcDifferentialTrys.h b/EtcLib/include/EtcCodec/EtcDifferentialTrys.h
+similarity index 100%
+rename from EtcLib/EtcCodec/EtcDifferentialTrys.h
+rename to EtcLib/include/EtcCodec/EtcDifferentialTrys.h
+diff --git a/EtcLib/EtcCodec/EtcErrorMetric.h b/EtcLib/include/EtcCodec/EtcErrorMetric.h
+similarity index 100%
+rename from EtcLib/EtcCodec/EtcErrorMetric.h
+rename to EtcLib/include/EtcCodec/EtcErrorMetric.h
+diff --git a/EtcLib/EtcCodec/EtcIndividualTrys.h b/EtcLib/include/EtcCodec/EtcIndividualTrys.h
+similarity index 100%
+rename from EtcLib/EtcCodec/EtcIndividualTrys.h
+rename to EtcLib/include/EtcCodec/EtcIndividualTrys.h
+diff --git a/EtcLib/EtcCodec/EtcSortedBlockList.h b/EtcLib/include/EtcCodec/EtcSortedBlockList.h
+similarity index 100%
+rename from EtcLib/EtcCodec/EtcSortedBlockList.h
+rename to EtcLib/include/EtcCodec/EtcSortedBlockList.h
+diff --git a/EtcLib/Etc/Etc.cpp b/EtcLib/src/Etc.cpp
+similarity index 100%
+rename from EtcLib/Etc/Etc.cpp
+rename to EtcLib/src/Etc.cpp
+diff --git a/EtcLib/EtcCodec/EtcBlock4x4.cpp b/EtcLib/src/EtcBlock4x4.cpp
+similarity index 100%
+rename from EtcLib/EtcCodec/EtcBlock4x4.cpp
+rename to EtcLib/src/EtcBlock4x4.cpp
+diff --git a/EtcLib/EtcCodec/EtcBlock4x4Encoding.cpp b/EtcLib/src/EtcBlock4x4Encoding.cpp
+similarity index 100%
+rename from EtcLib/EtcCodec/EtcBlock4x4Encoding.cpp
+rename to EtcLib/src/EtcBlock4x4Encoding.cpp
+diff --git a/EtcLib/EtcCodec/EtcBlock4x4Encoding_ETC1.cpp b/EtcLib/src/EtcBlock4x4Encoding_ETC1.cpp
+similarity index 100%
+rename from EtcLib/EtcCodec/EtcBlock4x4Encoding_ETC1.cpp
+rename to EtcLib/src/EtcBlock4x4Encoding_ETC1.cpp
+diff --git a/EtcLib/EtcCodec/EtcBlock4x4Encoding_R11.cpp b/EtcLib/src/EtcBlock4x4Encoding_R11.cpp
+similarity index 100%
+rename from EtcLib/EtcCodec/EtcBlock4x4Encoding_R11.cpp
+rename to EtcLib/src/EtcBlock4x4Encoding_R11.cpp
+diff --git a/EtcLib/EtcCodec/EtcBlock4x4Encoding_RG11.cpp b/EtcLib/src/EtcBlock4x4Encoding_RG11.cpp
+similarity index 100%
+rename from EtcLib/EtcCodec/EtcBlock4x4Encoding_RG11.cpp
+rename to EtcLib/src/EtcBlock4x4Encoding_RG11.cpp
+diff --git a/EtcLib/EtcCodec/EtcBlock4x4Encoding_RGB8.cpp b/EtcLib/src/EtcBlock4x4Encoding_RGB8.cpp
+similarity index 100%
+rename from EtcLib/EtcCodec/EtcBlock4x4Encoding_RGB8.cpp
+rename to EtcLib/src/EtcBlock4x4Encoding_RGB8.cpp
+diff --git a/EtcLib/EtcCodec/EtcBlock4x4Encoding_RGB8A1.cpp b/EtcLib/src/EtcBlock4x4Encoding_RGB8A1.cpp
+similarity index 100%
+rename from EtcLib/EtcCodec/EtcBlock4x4Encoding_RGB8A1.cpp
+rename to EtcLib/src/EtcBlock4x4Encoding_RGB8A1.cpp
+diff --git a/EtcLib/EtcCodec/EtcBlock4x4Encoding_RGBA8.cpp b/EtcLib/src/EtcBlock4x4Encoding_RGBA8.cpp
+similarity index 100%
+rename from EtcLib/EtcCodec/EtcBlock4x4Encoding_RGBA8.cpp
+rename to EtcLib/src/EtcBlock4x4Encoding_RGBA8.cpp
+diff --git a/EtcLib/EtcCodec/EtcDifferentialTrys.cpp b/EtcLib/src/EtcDifferentialTrys.cpp
+similarity index 100%
+rename from EtcLib/EtcCodec/EtcDifferentialTrys.cpp
+rename to EtcLib/src/EtcDifferentialTrys.cpp
+diff --git a/EtcLib/Etc/EtcFilter.cpp b/EtcLib/src/EtcFilter.cpp
+similarity index 100%
+rename from EtcLib/Etc/EtcFilter.cpp
+rename to EtcLib/src/EtcFilter.cpp
+diff --git a/EtcLib/Etc/EtcImage.cpp b/EtcLib/src/EtcImage.cpp
+similarity index 100%
+rename from EtcLib/Etc/EtcImage.cpp
+rename to EtcLib/src/EtcImage.cpp
+diff --git a/EtcLib/EtcCodec/EtcIndividualTrys.cpp b/EtcLib/src/EtcIndividualTrys.cpp
+similarity index 100%
+rename from EtcLib/EtcCodec/EtcIndividualTrys.cpp
+rename to EtcLib/src/EtcIndividualTrys.cpp
+diff --git a/EtcLib/Etc/EtcMath.cpp b/EtcLib/src/EtcMath.cpp
+similarity index 100%
+rename from EtcLib/Etc/EtcMath.cpp
+rename to EtcLib/src/EtcMath.cpp
+diff --git a/EtcLib/EtcCodec/EtcSortedBlockList.cpp b/EtcLib/src/EtcSortedBlockList.cpp
+similarity index 100%
+rename from EtcLib/EtcCodec/EtcSortedBlockList.cpp
+rename to EtcLib/src/EtcSortedBlockList.cpp
