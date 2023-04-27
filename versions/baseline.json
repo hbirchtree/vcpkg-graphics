@@ -3,7 +3,7 @@
         "bcdec": { "baseline": "2022-09-15", "port-version": 1 },
         "etc2comp": { "baseline": "1.0", "port-version": 1 },
         "ktx": { "baseline": "4.1.0-rc3", "port-version": 2 },
-        "shaderc": { "baseline": "2021.1", "port-version": 1 },
-        "spirv-tools": { "baseline": "2022.4", "port-version": 1 }
+        "shaderc": { "baseline": "2021.1", "port-version": 4 },
+        "spirv-tools": { "baseline": "2022.4", "port-version": 2 }
     }
 }
