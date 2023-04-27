@@ -1,0 +1,47 @@
+commit f24605c4a9ae38f772b5a137afefca19503f5d65
+Author: Håvard Bjerke <h0wy36@gmail.com>
+Date:   Wed Apr 19 19:42:10 2023 +0200
+
+    emscripten
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index a5316bfc..cf02e9e7 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -133,10 +133,6 @@ if(UNIX AND NOT APPLE AND NOT EMSCRIPTEN AND NOT ANDROID)
+     set(LINUX TRUE)
+ endif()
+ 
+-if(EMSCRIPTEN)
+-    set( KTX_FEATURE_VULKAN OFF )
+-endif()
+-
+ set(bitness 64)
+ if(NOT CMAKE_SIZEOF_VOID_P EQUAL 8 OR FORCE32)
+         set(bitness 32)
+diff --git a/lib/basisu/encoder/basisu_enc.cpp b/lib/basisu/encoder/basisu_enc.cpp
+index 8cf77789..3ee28ccb 100644
+--- a/lib/basisu/encoder/basisu_enc.cpp
++++ b/lib/basisu/encoder/basisu_enc.cpp
+@@ -229,7 +229,7 @@ namespace basisu
+ 	{
+ 		QueryPerformanceFrequency(reinterpret_cast<LARGE_INTEGER*>(pTicks));
+ 	}
+-#elif defined(__APPLE__) || defined(__FreeBSD__) || defined(__OpenBSD__)
++#elif defined(__APPLE__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__EMSCRIPTEN__)
+ #include <sys/time.h>
+ 	inline void query_counter(timer_ticks* pTicks)
+ 	{
+diff --git a/lib/vk_funcs.c b/lib/vk_funcs.c
+index 98961aa9..53506470 100644
+--- a/lib/vk_funcs.c
++++ b/lib/vk_funcs.c
+@@ -59,7 +59,7 @@
+ HMODULE ktxVulkanModuleHandle;
+ #define GetVulkanModuleHandle(flags) ktxGetVulkanModuleHandle()
+ #define LoadProcAddr GetProcAddress
+-#elif MACOS || UNIX || IOS
++#elif MACOS || UNIX || IOS || __EMSCRIPTEN__
+ // Using NULL returns a handle that can be used to search the process that
+ // loaded us and any other libraries it has loaded. That's all we need to
+ // search as the app is responsible for creating the GL context so it must

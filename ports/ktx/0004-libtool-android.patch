@@ -1,0 +1,27 @@
+commit f4703fcbb415edad640f22be7b195f2704d41c68
+Author: Håvard Bjerke <h0wy36@gmail.com>
+Date:   Wed Apr 19 19:38:19 2023 +0200
+
+    android
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index bc679fd1..a5316bfc 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -821,6 +821,7 @@ else()
+     set(ASTC_LIB_TARGET astcenc-static)
+ endif()
+ 
++if(NOT ANDROID)
+ # astcenc
+ set(CLI OFF) # Only build as library not the CLI astcencoder
+ add_subdirectory(lib/astc-encoder)
+@@ -841,7 +842,7 @@ if(KTX_FEATURE_STATIC_LIBRARY AND NOT WIN32 AND NOT EMSCRIPTEN)
+ else()
+     target_link_libraries(ktx PRIVATE ${ASTC_LIB_TARGET})
+ endif()
+-
++endif()
+ # Tools
+ if(KTX_FEATURE_TOOLS)
+     add_subdirectory(tools)
