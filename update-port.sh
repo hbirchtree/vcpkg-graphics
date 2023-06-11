@@ -39,6 +39,10 @@ cat versions/$PREFIX-/$PORT.json
 
 echo "Updated port $PORT to $VERSION ($TREE)"
 
+if [ ! -f versions/baseline.json ]; then
+    echo '{"default": {}}' > versions/baseline.json
+fi
+
 if [ "$VERSION" != "null" ]; then
     BASELINE=$(jq ".default += {\"$PORT\":{\"baseline\": \"$VERSION\", \"port-version\": $PORT_VERSION}}" < versions/baseline.json)
 else
