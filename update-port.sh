@@ -10,21 +10,28 @@ fi
 
 PORT_VERSION=$(jq -r '."port-version"' < ports/$PORT/vcpkg.json)
 VERSION=$(jq -r .version < ports/$PORT/vcpkg.json)
+SEMVER=$(jq -r '."version-semver"' < ports/$PORT/vcpkg.json)
 TREE=$(git rev-parse HEAD:ports/$PORT)
 
 PREFIX=$(echo $PORT | cut -c1-1)
 
 mkdir -p versions/${PREFIX}-
 
-echo "{
+VERSIONING="{
     \"versions\": [
         {
-            \"version\": \"$VERSION\",
             \"port-version\": $PORT_VERSION,
             \"git-tree\": \"$TREE\"
         }
     ]
-}" | jq > versions/${PREFIX}-/$PORT.json
+}"
+if [ -n "$SEMVER" ]; then
+    VERSIONING=$(echo "$VERSIONING" | jq ".versions[0] += {\"version-semver\": \"$SEMVER\"}")
+else
+    VERSIONING=$(echo "$VERSIONING" | jq ".versions[0] += {\"version\": \"$VERSION\"}")
+fi
+
+echo $VERSIONING > versions/${PREFIX}-/$PORT.json
 
 cat versions/$PREFIX-/$PORT.json
 
