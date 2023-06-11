@@ -13,6 +13,7 @@ vcpkg_from_github(
         0003-libtool.patch
         0004-libtool-android.patch
         0005-emscripten-basisu.patch
+        0006-encoders-behind-options.patch
 )
 
 if(VCPKG_TARGET_IS_WINDOWS)
