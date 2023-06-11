@@ -4,6 +4,8 @@ cd $(dirname $0)
 
 PORT=$1
 
+mkdir -p ports versions
+
 if [ -z "$PORT" ]; then
     exit 1
 fi
