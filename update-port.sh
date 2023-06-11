@@ -15,6 +15,8 @@ TREE=$(git rev-parse HEAD:ports/$PORT)
 
 PREFIX=$(echo $PORT | cut -c1-1)
 
+echo $VERSION $SEMVER
+
 mkdir -p versions/${PREFIX}-
 
 VERSIONING="{
@@ -25,10 +27,10 @@ VERSIONING="{
         }
     ]
 }"
-if [ -n "$SEMVER" ]; then
-    VERSIONING=$(echo "$VERSIONING" | jq ".versions[0] += {\"version-semver\": \"$SEMVER\"}")
-else
+if [ "$VERSION" != "null" ]; then
     VERSIONING=$(echo "$VERSIONING" | jq ".versions[0] += {\"version\": \"$VERSION\"}")
+else
+    VERSIONING=$(echo "$VERSIONING" | jq ".versions[0] += {\"version-semver\": \"$SEMVER\"}")
 fi
 
 echo $VERSIONING > versions/${PREFIX}-/$PORT.json
@@ -37,5 +39,9 @@ cat versions/$PREFIX-/$PORT.json
 
 echo "Updated port $PORT to $VERSION ($TREE)"
 
-BASELINE=$(jq ".default += {\"pvrtcdec\":{\"baseline\": \"$VERSION\", \"port-version\": $PORT_VERSION}}" < versions/baseline.json)
+if [ "$VERSION" != "null" ]; then
+    BASELINE=$(jq ".default += {\"$PORT\":{\"baseline\": \"$VERSION\", \"port-version\": $PORT_VERSION}}" < versions/baseline.json)
+else
+    BASELINE=$(jq ".default += {\"$PORT\":{\"baseline\": \"$SEMVER\", \"port-version\": $PORT_VERSION}}" < versions/baseline.json)
+fi
 echo $BASELINE > versions/baseline.json
