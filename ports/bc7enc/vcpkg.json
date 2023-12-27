@@ -1,7 +1,7 @@
 {
   "name": "bc7enc",
   "version": "1.0.0",
-  "port-version": 1,
+  "port-version": 2,
   "description": "BC 1-5/7 decoder/encoder",
   "homepage": "https://github.com/richgel999/bc7enc",
   "dependencies": [
