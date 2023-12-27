@@ -1,0 +1,17 @@
+{
+  "name": "bc7enc",
+  "version": "1.0.0",
+  "port-version": 1,
+  "description": "BC 1-5/7 decoder/encoder",
+  "homepage": "https://github.com/richgel999/bc7enc",
+  "dependencies": [
+    {
+      "name": "vcpkg-cmake",
+      "host": true
+    },
+    {
+      "name": "vcpkg-cmake-config",
+      "host": true
+    }
+  ]
+}
