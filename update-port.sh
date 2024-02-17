@@ -35,7 +35,7 @@ else
     VERSIONING=$(echo "$VERSIONING" | jq ".versions[0] += {\"version-semver\": \"$SEMVER\"}")
 fi
 
-echo $VERSIONING > versions/${PREFIX}-/$PORT.json
+echo "$VERSIONING" > versions/${PREFIX}-/$PORT.json
 
 cat versions/$PREFIX-/$PORT.json
 
@@ -50,4 +50,4 @@ if [ "$VERSION" != "null" ]; then
 else
     BASELINE=$(jq ".default += {\"$PORT\":{\"baseline\": \"$SEMVER\", \"port-version\": $PORT_VERSION}}" < versions/baseline.json)
 fi
-echo $BASELINE > versions/baseline.json
+echo "$BASELINE" > versions/baseline.json
