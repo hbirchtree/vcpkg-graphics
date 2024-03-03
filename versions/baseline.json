@@ -31,6 +31,10 @@
     "pvrscope": {
       "baseline": "3.5",
       "port-version": 1
+    },
+    "nvidia-gdk": {
+      "baseline": "352.79",
+      "port-version": 1
     }
   }
 }
