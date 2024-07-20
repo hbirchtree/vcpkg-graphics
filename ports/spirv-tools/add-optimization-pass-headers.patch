@@ -2,7 +2,7 @@ diff --git a/CMakeLists.txt b/CMakeLists.txt
 index 1b8fe92f..0e2c4f4e 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -351,6 +351,182 @@ if(ENABLE_SPIRV_TOOLS_INSTALL)
+@@ -351,6 +351,183 @@ if(ENABLE_SPIRV_TOOLS_INSTALL)
        ${CMAKE_CURRENT_SOURCE_DIR}/include/spirv-tools/instrument.hpp
      DESTINATION
        ${CMAKE_INSTALL_INCLUDEDIR}/spirv-tools/)
@@ -80,7 +80,7 @@ index 1b8fe92f..0e2c4f4e 100644
 +      ${CMAKE_CURRENT_SOURCE_DIR}/source/opt/eliminate_dead_constant_pass.h
 +      ${CMAKE_CURRENT_SOURCE_DIR}/source/opt/eliminate_dead_functions_pass.h
 +      ${CMAKE_CURRENT_SOURCE_DIR}/source/opt/eliminate_dead_functions_util.h
-+      ${CMAKE_CURRENT_SOURCE_DIR}/source/opt/eliminate_dead_input_components_pass.h
++      ${CMAKE_CURRENT_SOURCE_DIR}/source/opt/eliminate_dead_io_components_pass.h
 +      ${CMAKE_CURRENT_SOURCE_DIR}/source/opt/eliminate_dead_members_pass.h
 +      ${CMAKE_CURRENT_SOURCE_DIR}/source/opt/empty_pass.h
 +      ${CMAKE_CURRENT_SOURCE_DIR}/source/opt/feature_manager.h
@@ -110,6 +110,7 @@ index 1b8fe92f..0e2c4f4e 100644
 +      ${CMAKE_CURRENT_SOURCE_DIR}/source/opt/ir_loader.h
 +      ${CMAKE_CURRENT_SOURCE_DIR}/source/opt/iterator.h
 +      ${CMAKE_CURRENT_SOURCE_DIR}/source/opt/licm_pass.h
++      ${CMAKE_CURRENT_SOURCE_DIR}/source/opt/liveness.h
 +      ${CMAKE_CURRENT_SOURCE_DIR}/source/opt/local_access_chain_convert_pass.h
 +      ${CMAKE_CURRENT_SOURCE_DIR}/source/opt/local_redundancy_elimination.h
 +      ${CMAKE_CURRENT_SOURCE_DIR}/source/opt/local_single_block_elim_pass.h
