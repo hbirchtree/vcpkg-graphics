@@ -1,0 +1,254 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 8f0fff32..bcff1cf7 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -55,6 +55,12 @@ option( KTX_FEATURE_JNI "Create Java bindings for libktx." OFF )
+ option( KTX_FEATURE_PY "Create Python source distribution." OFF )
+ option( KTX_FEATURE_TESTS "Create unit tests." ON )
+ option( KTX_FEATURE_TOOLS_CTS "Enable KTX CLI Tools CTS tests (requires CTS submodule)." OFF )
++option( KTX_FEATURE_BASISU_ENCODE "Enable BasisU encode" OFF )
++option( KTX_FEATURE_WRITE_SUPPORT "Enable write support in library" OFF )
++if(EMSCRIPTEN)
++  set(KTX_FEATURE_BASISU_ENCODE OFF)
++  option( KTX_FEATURE_KTXJS "Build KTX.js for Emscripten" OFF )
++endif()
+ 
+ if(KTX_FEATURE_TOOLS_CTS AND NOT KTX_FEATURE_TOOLS)
+     message(WARNING "KTX_FEATURE_TOOLS is not set -> disabling KTX_FEATURE_TOOLS_CTS.")
+@@ -331,11 +337,9 @@ if(${is_clangcl})
+ endif()
+ if(${is_clangcl} AND $<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,14.0.0>)
+     add_compile_options(-Xclang -ffp-contract=off)
+-endif()
+-if(${is_clang} AND $<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,10.0.0>)
++elseif(${is_clang} AND $<VERSION_GREATER_EQUAL:$<CXX_COMPILER_VERSION>,10.0.0>)
+     add_compile_options(-ffp-model=precise)
+-endif()
+-if(${is_gnu_fe})
++elseif(${is_gnu_fe})
+     add_compile_options(-ffp-contract=off)
+ endif()
+ 
+@@ -345,17 +349,8 @@ set(KTX_MAIN_SRC
+     include/KHR/khr_df.h
+     include/ktx.h
+     lib/basis_sgd.h
+-    lib/basis_transcode.cpp
+     lib/miniz_wrapper.cpp
+-    lib/basisu/transcoder/basisu_containers.h
+-    lib/basisu/transcoder/basisu_containers_impl.h
+-    lib/basisu/transcoder/basisu_file_headers.h
+-    lib/basisu/transcoder/basisu_transcoder_internal.h
+-    lib/basisu/transcoder/basisu_transcoder_uastc.h
+-    lib/basisu/transcoder/basisu_transcoder.cpp
+-    lib/basisu/transcoder/basisu_transcoder.h
+-    lib/basisu/transcoder/basisu.h
+-    lib/checkheader.c
++    #lib/checkheader.c
+     lib/dfdutils/createdfd.c
+     lib/dfdutils/colourspaces.c
+     lib/dfdutils/dfd.h
+@@ -394,6 +389,19 @@ set(KTX_MAIN_SRC
+     lib/vkformat_str.c
+     lib/vkformat_typesize.c
+     )
++if(KTX_FEATURE_BASISU_ENCODE)
++  list(APPEND KTX_MAIN_SRC
++    lib/basis_transcode.cpp
++    lib/basisu/transcoder/basisu_containers.h
++    lib/basisu/transcoder/basisu_containers_impl.h
++    lib/basisu/transcoder/basisu_file_headers.h
++    lib/basisu/transcoder/basisu_transcoder_internal.h
++    lib/basisu/transcoder/basisu_transcoder_uastc.h
++    lib/basisu/transcoder/basisu_transcoder.cpp
++    lib/basisu/transcoder/basisu_transcoder.h
++    lib/basisu/transcoder/basisu.h
++    )
++endif()
+ 
+ set(BASISU_ENCODER_CXX_SRC
+     lib/basisu/encoder/basisu_backend.cpp
+@@ -459,9 +467,9 @@ elseif(APPLE OR LINUX)
+ endif()
+ 
+ # Main library
+-add_library( ktx ${LIB_TYPE}
+-    ${KTX_MAIN_SRC}
+-    )
++  add_library( ktx ${LIB_TYPE}
++      ${KTX_MAIN_SRC}
++      )
+ 
+ # Read-only library
+ add_library( ktx_read ${LIB_TYPE}
+@@ -555,6 +563,7 @@ macro(common_libktx_settings target enable_write library_type)
+         ${target}
+         SYSTEM
+     PRIVATE
++        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/other_include>
+         $<INSTALL_INTERFACE:other_include>
+     )
+@@ -693,6 +702,11 @@ macro(common_libktx_settings target enable_write library_type)
+         )
+     else()
+         target_compile_definitions( ${target} PRIVATE KTX_OMIT_VULKAN=1 )
++        get_target_property( KTX_PUBLIC_HEADER ${target} PUBLIC_HEADER )
++        list(APPEND KTX_PUBLIC_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/include/ktxvulkan.h)
++        set_target_properties(${target} PROPERTIES
++            PUBLIC_HEADER "${KTX_PUBLIC_HEADER}"
++        )
+     endif()
+ 
+     # Adding write capability to target ktx
+@@ -746,7 +760,11 @@ macro(common_libktx_settings target enable_write library_type)
+     endif()
+ endmacro(common_libktx_settings)
+ 
+-common_libktx_settings(ktx 1 ${LIB_TYPE})
++if(KTX_FEATURE_WRITE_SUPPORT)
++  common_libktx_settings(ktx 1 ${LIB_TYPE})
++else()
++  common_libktx_settings(ktx 0 ${LIB_TYPE})
++endif()
+ common_libktx_settings(ktx_read 0 ${LIB_TYPE})
+ 
+ if(KTX_FEATURE_JNI)
+@@ -873,7 +891,7 @@ get_source_file_property(transcoder_options
+ )
+ get_source_file_property(zstd_options lib/basisu/zstd/zstd.c COMPILE_OPTIONS)
+ 
+-if(EMSCRIPTEN)
++if(EMSCRIPTEN AND KTX_FEATURE_KTXJS)
+     set(
+         KTX_EMC_LINK_FLAGS
+         --bind
+@@ -1004,7 +1022,9 @@ if(KTX_FEATURE_STATIC_LIBRARY AND
+     )
+ endif()
+ 
+-add_subdirectory(interface/basisu_c_binding)
++if(KTX_FEATURE_BASISU_C_BINDING)
++  add_subdirectory(interface/basisu_c_binding)
++endif()
+ 
+ # Only one architecture is supported at once, if neither ASTCENC_ISA_SSE41
+ # nor ASTCENC_ISA_SSE2 are defined, ASTCENC_ISA_AVX2 is chosen. If
+@@ -1015,57 +1035,59 @@ add_subdirectory(interface/basisu_c_binding)
+ list(FIND CMAKE_OSX_ARCHITECTURES "$(ARCHS_STANDARD)" ASTCENC_BUILD_UNIVERSAL)
+ list(LENGTH CMAKE_OSX_ARCHITECTURES ARCHITECTURE_COUNT)
+ 
+-if(${ASTCENC_BUILD_UNIVERSAL} EQUAL -1 AND ARCHITECTURE_COUNT LESS_EQUAL 1)
+-    if (${ASTCENC_ISA_NONE})
+-        set(ASTCENC_LIB_TARGET astcenc-none-static)
+-    else()
+-        if(CPU_ARCHITECTURE STREQUAL x86_64 OR CPU_ARCHITECTURE STREQUAL x86)
+-            if (${ASTCENC_ISA_SSE41})
+-                set(ASTCENC_LIB_TARGET astcenc-sse4.1-static)
+-            elseif (${ASTCENC_ISA_SSE2})
+-                set(ASTCENC_LIB_TARGET astcenc-sse2-static)
+-            else()
+-                set(ASTCENC_ISA_AVX2 ON)
+-                set(ASTCENC_LIB_TARGET astcenc-avx2-static)
+-            endif()
+-            if(CPU_ARCHITECTURE STREQUAL x86)
+-                set(ASTCENC_ISA_NONE ON)
+-                set(ASTCENC_ISA_AVX2 OFF)
+-                set(ASTCENC_POPCNT 0)
+-                set(ASTCENC_LIB_TARGET astcenc-none-static)
+-            endif()
+-        elseif(CPU_ARCHITECTURE STREQUAL armv8 OR CPU_ARCHITECTURE STREQUAL arm64)
+-            set(ASTCENC_LIB_TARGET astcenc-neon-static)
+-            set(ASTCENC_ISA_NEON ON)
+-        else()
+-            message(STATUS "Unsupported ISA for ASTC on ${CPU_ARCHITECTURE} arch, using ASTCENC_ISA_NONE.")
+-            set(ASTCENC_LIB_TARGET astcenc-none-static)
+-            set(ASTCENC_ISA_NONE ON)
+-        endif()
+-    endif()
+-else()
+-    set(ASTCENC_LIB_TARGET astcenc-static)
+-endif()
++if(KTX_FEATURE_ASTCENCODER)
++  if(${ASTCENC_BUILD_UNIVERSAL} EQUAL -1 AND ARCHITECTURE_COUNT LESS_EQUAL 1)
++      if (${ASTCENC_ISA_NONE})
++          set(ASTCENC_LIB_TARGET astcenc-none-static)
++      else()
++          if(CPU_ARCHITECTURE STREQUAL x86_64 OR CPU_ARCHITECTURE STREQUAL x86)
++              if (${ASTCENC_ISA_SSE41})
++                  set(ASTCENC_LIB_TARGET astcenc-sse4.1-static)
++              elseif (${ASTCENC_ISA_SSE2})
++                  set(ASTCENC_LIB_TARGET astcenc-sse2-static)
++              else()
++                  set(ASTCENC_ISA_AVX2 ON)
++                  set(ASTCENC_LIB_TARGET astcenc-avx2-static)
++              endif()
++              if(CPU_ARCHITECTURE STREQUAL x86)
++                  set(ASTCENC_ISA_NONE ON)
++                  set(ASTCENC_ISA_AVX2 OFF)
++                  set(ASTCENC_POPCNT 0)
++                  set(ASTCENC_LIB_TARGET astcenc-none-static)
++              endif()
++          elseif(CPU_ARCHITECTURE STREQUAL armv8 OR CPU_ARCHITECTURE STREQUAL arm64)
++              set(ASTCENC_LIB_TARGET astcenc-neon-static)
++              set(ASTCENC_ISA_NEON ON)
++          else()
++              message(STATUS "Unsupported ISA for ASTC on ${CPU_ARCHITECTURE} arch, using ASTCENC_ISA_NONE.")
++              set(ASTCENC_LIB_TARGET astcenc-none-static)
++              set(ASTCENC_ISA_NONE ON)
++          endif()
++      endif()
++  else()
++      set(ASTCENC_LIB_TARGET astcenc-static)
++  endif()
+ 
+ # astcenc
+-set(ASTCENC_CLI OFF) # Only build as library not the CLI astcencoder
+-add_subdirectory(lib/astc-encoder)
+-set_property(TARGET ${ASTCENC_LIB_TARGET} PROPERTY POSITION_INDEPENDENT_CODE ON)
+-
+-if(KTX_FEATURE_STATIC_LIBRARY AND APPLE)
+-    # Make a single static library to simplify linking.
+-    add_dependencies(ktx ${ASTCENC_LIB_TARGET})
+-    add_custom_command( TARGET ktx
+-        POST_BUILD
+-        COMMAND libtool -static -o $<TARGET_FILE:ktx> $<TARGET_FILE:ktx> $<TARGET_FILE:${ASTCENC_LIB_TARGET}>
+-    )
+-
+-    # Don't know libtool equivalent on Windows or Emscripten. Applications
+-    # will have to link with  both ktx and ${ASTCENC_LIB_TARGET}. Static libs
+-    # are unlikely to be used on Windows so not a problem there. For Emscripten
+-    # everything is built into the JS module so not an issue there either.
+-else()
+-    target_link_libraries(ktx PRIVATE ${ASTCENC_LIB_TARGET})
++  set(ASTCENC_CLI OFF) # Only build as library not the CLI astcencoder
++  add_subdirectory(lib/astc-encoder)
++  set_property(TARGET ${ASTCENC_LIB_TARGET} PROPERTY POSITION_INDEPENDENT_CODE ON)
++
++  if(KTX_FEATURE_STATIC_LIBRARY AND APPLE)
++      # Make a single static library to simplify linking.
++      add_dependencies(ktx ${ASTCENC_LIB_TARGET})
++      add_custom_command( TARGET ktx
++          POST_BUILD
++          COMMAND libtool -static -o $<TARGET_FILE:ktx> $<TARGET_FILE:ktx> $<TARGET_FILE:${ASTCENC_LIB_TARGET}>
++      )
++
++      # Don't know libtool equivalent on Windows or Emscripten. Applications
++      # will have to link with  both ktx and ${ASTCENC_LIB_TARGET}. Static libs
++      # are unlikely to be used on Windows so not a problem there. For Emscripten
++      # everything is built into the JS module so not an issue there either.
++  else()
++      target_link_libraries(ktx PRIVATE ${ASTCENC_LIB_TARGET})
++  endif()
+ endif()
+ 
+ # Other external projects
+@@ -1095,7 +1117,7 @@ if(KTX_FEATURE_DOC)
+ endif()
+ 
+ set(KTX_INSTALL_TARGETS ktx)
+-if(KTX_FEATURE_STATIC_LIBRARY AND NOT APPLE)
++if(TARGET ${ASTCENC_LIB_TARGET})
+     list(APPEND KTX_INSTALL_TARGETS ${ASTCENC_LIB_TARGET})
+ endif()
+ 

@@ -10,8 +10,8 @@ vcpkg_from_github(
         0003-mkversion.patch
         0004-quirks.patch
         0005-no-vendored-libs.patch
-        0005-emscripten-basisu.patch
         0006-fix-ios-install.patch
+        0007-emscripten-fixes.patch
 )
 file(REMOVE "${SOURCE_PATH}/other_include/zstd_errors.h")
 file(REMOVE_RECURSE "${SOURCE_PATH}/external/basisu/zstd")
@@ -40,6 +40,7 @@ vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
     FEATURES
         tools   KTX_FEATURE_TOOLS
         vulkan  KTX_FEATURE_VK_UPLOAD
+        write   KTX_FEATURE_WRITE_SUPPORT
 )
 
 vcpkg_cmake_configure(
