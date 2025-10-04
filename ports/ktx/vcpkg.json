@@ -1,10 +1,13 @@
 {
   "name": "ktx",
-  "version-semver": "4.1.0-rc3",
-  "port-version": 3,
-  "description": "A small library of functions for writing and reading KTX files, and instantiating OpenGL®, OpenGL ES™️ and Vulkan® textures from them",
+  "version-semver": "4.3.2",
+  "port-version": 4,
+  "description": [
+    "The Khronos KTX library and tools.",
+    "Functions for writing and reading KTX files, and instantiating OpenGL®, OpenGL ES™️ and Vulkan® textures from them."
+  ],
   "homepage": "https://github.com/KhronosGroup/KTX-Software",
-  "license": "Apache-2.0",
+  "license": null,
   "dependencies": [
     {
       "name": "vcpkg-cmake",
@@ -18,7 +21,12 @@
   ],
   "features": {
     "tools": {
-      "description": "Build tools"
+      "description": "Build tools",
+      "supports": "!android & !uwp",
+      "dependencies": [
+        "cxxopts",
+        "fmt"
+      ]
     },
     "vulkan": {
       "description": "Build Vulkan support"
