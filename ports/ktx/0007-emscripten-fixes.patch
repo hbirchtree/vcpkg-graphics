@@ -1,5 +1,5 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 8f0fff32..bcff1cf7 100644
+index 8f0fff32..de912131 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -55,6 +55,12 @@ option( KTX_FEATURE_JNI "Create Java bindings for libktx." OFF )
@@ -29,7 +29,7 @@ index 8f0fff32..bcff1cf7 100644
      add_compile_options(-ffp-contract=off)
  endif()
  
-@@ -345,17 +349,8 @@ set(KTX_MAIN_SRC
+@@ -345,16 +349,7 @@ set(KTX_MAIN_SRC
      include/KHR/khr_df.h
      include/ktx.h
      lib/basis_sgd.h
@@ -43,11 +43,9 @@ index 8f0fff32..bcff1cf7 100644
 -    lib/basisu/transcoder/basisu_transcoder.cpp
 -    lib/basisu/transcoder/basisu_transcoder.h
 -    lib/basisu/transcoder/basisu.h
--    lib/checkheader.c
-+    #lib/checkheader.c
+     lib/checkheader.c
      lib/dfdutils/createdfd.c
      lib/dfdutils/colourspaces.c
-     lib/dfdutils/dfd.h
 @@ -394,6 +389,19 @@ set(KTX_MAIN_SRC
      lib/vkformat_str.c
      lib/vkformat_typesize.c

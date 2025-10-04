@@ -14,6 +14,11 @@
       "port-version": 5,
       "git-tree": "e0914def305df429303e6d0140aec4c19eb5f8ed",
       "version-semver": "4.3.2"
+    },
+    {
+      "port-version": 6,
+      "git-tree": "4b1a79ee8711496f0743e1ce3a830ca4ca042cf7",
+      "version-semver": "4.3.2"
     }
   ]
 }
