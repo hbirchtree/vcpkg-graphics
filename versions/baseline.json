@@ -10,7 +10,7 @@
     },
     "ktx": {
       "baseline": "4.3.2",
-      "port-version": 8
+      "port-version": 9
     },
     "shaderc": {
       "baseline": "2023.8",
