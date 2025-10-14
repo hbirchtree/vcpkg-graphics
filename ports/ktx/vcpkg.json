@@ -1,7 +1,7 @@
 {
   "name": "ktx",
   "version-semver": "4.3.2",
-  "port-version": 9,
+  "port-version": 10,
   "description": [
     "The Khronos KTX library and tools.",
     "Functions for writing and reading KTX files, and instantiating OpenGL®, OpenGL ES™️ and Vulkan® textures from them."
@@ -22,7 +22,7 @@
   "features": {
     "basisu": {
       "description": "Build BasisU encode support",
-      "supports": "!android & !emscripten & !(linux & arm)"
+      "supports": "!android & !emscripten & !armv7"
     },
     "tools": {
       "description": "Build tools",
@@ -37,7 +37,7 @@
     },
     "write": {
       "description": "Support for writing KTX files",
-      "supports": "!android & !emscripten & !(linux & arm)"
+      "supports": "!android & !emscripten & !armv7"
     }
   }
 }
