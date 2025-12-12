@@ -1,8 +1,7 @@
-vcpkg_from_github(
+vcpkg_from_git(
     OUT_SOURCE_PATH SOURCE_PATH
-    REPO KhronosGroup/KTX-Software
+    URL https://github.com/KhronosGroup/KTX-Software.git
     REF "v${VERSION}"
-    SHA512 a4026eb414a80507b67f4498b1772c7288f6fac97bab8e5a8ee75fe39b262de22666e10fe76205dfb074332ce06b3af7e8d8686880cef51d113e05e231767ff2
     HEAD_REF master
     PATCHES
         0001-Use-vcpkg-zstd.patch
