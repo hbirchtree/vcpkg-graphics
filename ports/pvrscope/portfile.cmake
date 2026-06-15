@@ -1,7 +1,7 @@
 vcpkg_download_distfile(ARCHIVE
-    URLS https://github.com/powervr-graphics/Native_SDK/archive/R15.1-v3.5.tar.gz
+    URLS https://github.com/powervr-graphics/Native_SDK/archive/R15.2-v4.0.tar.gz
     FILENAME pvrscope.tar.gz
-    SHA512 751b9643f446c63cc36169c11c6ed9136ccd4829d36deae7916fbf30daafc0c2922231a2fe0fc08ba262b2e80e5a1cd622b460ca397f7daff54d7960d1dd1cff
+    SHA512 eda26baedc8460ec89bf1f2db51f30e5495e8efe3f6ead3c2882d8119f2ffaf4138f89eb111bc60f2b824d6a252e14a30fbabc5dcb0e4e064cdeab7ece8aeb60
 )
 
 vcpkg_extract_source_archive(

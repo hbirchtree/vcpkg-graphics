@@ -1,7 +1,7 @@
 vcpkg_download_distfile(ARCHIVE
-    URLS https://github.com/powervr-graphics/Native_SDK/archive/9624ad3c8da0bbb92acba7cbe111e133b9682134.tar.gz
+    URLS https://github.com/powervr-graphics/Native_SDK/archive/R26.1-v5.16.tar.gz
     FILENAME pvrtcdec.tar.gz
-    SHA512 189136b314dd99c641ed4477783cf0b718fe88fe693098742c72666faf09e7f237f3969c18e0016d7e823ad39a931dd241a8f73b1b17ed98847f8c2ac2fd7121
+    SHA512 3f452cd0b87566d42bf69fd12327f637e1371f87fa98a386b969ddedaa3cc5dad67dccda9ec589137c2532b2a8fcebc60b79e0a6d7c9d6b823fb37dc7fb421b1
 )
 
 vcpkg_extract_source_archive(

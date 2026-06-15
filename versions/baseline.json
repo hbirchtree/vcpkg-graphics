@@ -21,16 +21,16 @@
       "port-version": 1
     },
     "pvrtcdec": {
-      "baseline": "5.9.0",
-      "port-version": 1
+      "baseline": "5.16.0",
+      "port-version": 2
     },
     "bc7enc": {
       "baseline": "1.0.0",
       "port-version": 2
     },
     "pvrscope": {
-      "baseline": "3.5",
-      "port-version": 1
+      "baseline": "4.0",
+      "port-version": 2
     },
     "nvidia-gdk": {
       "baseline": "352.79",

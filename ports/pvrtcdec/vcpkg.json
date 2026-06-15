@@ -1,7 +1,7 @@
 {
   "name": "pvrtcdec",
-  "version": "5.9.0",
-  "port-version": 1,
+  "version": "5.16.0",
+  "port-version": 2,
   "description": "PVRTC + ETC1 decoder",
   "homepage": "https://github.com/powervr-graphics/Native_SDK",
   "dependencies": [

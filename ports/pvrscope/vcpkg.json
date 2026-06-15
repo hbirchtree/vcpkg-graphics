@@ -1,7 +1,7 @@
 {
   "name": "pvrscope",
-  "version": "3.5",
-  "port-version": 1,
+  "version": "4.0",
+  "port-version": 2,
   "supports": "(linux & (x86 | x64 | arm | arm64)) | (android & (arm | arm64))",
   "description": "PowerVR GPU info",
   "homepage": "https://github.com/powervr-graphics/Native_SDK",
