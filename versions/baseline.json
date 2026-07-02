@@ -35,6 +35,10 @@
     "nvidia-gdk": {
       "baseline": "352.79",
       "port-version": 1
+    },
+    "libwma": {
+      "baseline": null,
+      "port-version": 4
     }
   }
 }
