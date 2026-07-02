@@ -39,6 +39,10 @@
     "libwma": {
       "baseline": null,
       "port-version": 4
+    },
+    "pvrtc": {
+      "baseline": null,
+      "port-version": 0
     }
   }
 }
