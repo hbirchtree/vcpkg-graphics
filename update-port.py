@@ -29,7 +29,10 @@ with open(f'ports/{port_name}/vcpkg.json') as manifest_data:
     try:
         version = manifest['version']
     except KeyError:
-        version = None
+        try:
+            version = manifest['version-date']
+        except KeyError:
+            version = None
     try:
         sem_version = manifest['version-semver']
     except KeyError:

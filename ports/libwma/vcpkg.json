@@ -1,7 +1,7 @@
 {
   "name": "libwma",
   "version-date": "2026-06-29",
-  "port-version": 4,
+  "port-version": 5,
   "description": "Fixed-point WMA v1/v2 decoder + C++20 ASF packet reader, extracted from the DeaDBeeF player's copy of the Rockbox/ffmpeg libwma. GPL portions replaced with MIT reimplementations; FFT/MDCT tables and sine/cosine computed at runtime via libm; IO goes through caller-provided callbacks.",
   "homepage": "https://github.com/DeaDBeeF-Player/deadbeef",
   "license": "LGPL-2.0-or-later AND BSD-3-Clause AND MIT",

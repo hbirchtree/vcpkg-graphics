@@ -1,7 +1,7 @@
 {
   "name": "pvrtc",
   "version-date": "2025-11-08",
-  "port-version": 0,
+  "port-version": 1,
   "description": "PVRTC 4bpp RGB/RGBA texture encoder (bounding-box endpoints + bilinear-modulation, Morton-order block packing), by harumazzz.",
   "homepage": "https://github.com/harumazzz/pvrtc",
   "license": "MIT",
