@@ -37,6 +37,11 @@ if(LIBWMA_HAVE_LIBM)
     target_link_libraries(wma PRIVATE m)
 endif()
 
+if(EMSCRIPTEN)
+    set(CMAKE_SHARED_LIBRARY_SUFFIX ".wasm")
+    set(CMAKE_PLATFORM_NO_VERSIONED_SONAME ON)
+endif()
+
 install(TARGETS wma EXPORT unofficial-libwma-targets
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib

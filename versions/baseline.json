@@ -38,7 +38,7 @@
     },
     "libwma": {
       "baseline": "2026-06-29",
-      "port-version": 5
+      "port-version": 6
     },
     "pvrtc": {
       "baseline": "2025-11-08",
