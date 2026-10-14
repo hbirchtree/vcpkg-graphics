@@ -42,7 +42,7 @@ if(EMSCRIPTEN)
     set(CMAKE_PLATFORM_NO_VERSIONED_SONAME ON)
 endif()
 
-install(TARGETS wma EXPORT unofficial-libwma-targets
+install(TARGETS wma EXPORT libwma-targets
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib
@@ -57,8 +57,8 @@ install(FILES
 )
 install(FILES ${WMA_DIR}/libasf/asf.h DESTINATION include/libasf)
 
-install(EXPORT unofficial-libwma-targets
-    NAMESPACE unofficial::libwma::
-    DESTINATION share/unofficial-libwma
-    FILE unofficial-libwma-config.cmake
+install(EXPORT libwma-targets
+    NAMESPACE libwma::
+    DESTINATION share/libwma
+    FILE libwma-config.cmake
 )
