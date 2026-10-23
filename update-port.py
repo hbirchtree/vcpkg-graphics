@@ -37,6 +37,7 @@ with open(f'ports/{port_name}/vcpkg.json') as manifest_data:
         sem_version = manifest['version-semver']
     except KeyError:
         sem_version = None
+    string_version = manifest.get('version-string')
 
 print(f':: Updating port {port_name}/{version}/{sem_version}#{port_version}')
 git_tree = git_tree_sha(port_name)
@@ -53,6 +54,8 @@ if version is not None:
     version_object['version'] = version
 if sem_version is not None:
     version_object['version-semver'] = sem_version
+if string_version is not None:
+    version_object['version-string'] = string_version
 
 current = {
     'versions': [version_object]
@@ -72,7 +75,7 @@ with open(version_file, 'w+') as versioning:
 
 baseline_file = f'versions/baseline.json'
 baseline_object = {
-    'baseline': sem_version or version,
+    'baseline': sem_version or version or string_version,
     'port-version': port_version
 }
 current = {
