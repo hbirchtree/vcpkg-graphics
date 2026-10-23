@@ -43,6 +43,10 @@
     "pvrtc": {
       "baseline": "2025-11-08",
       "port-version": 1
+    },
+    "angle": {
+      "baseline": "chromium_7258",
+      "port-version": 2
     }
   }
 }

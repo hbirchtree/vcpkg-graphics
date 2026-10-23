@@ -1,0 +1,9 @@
+{
+  "versions": [
+    {
+      "port-version": 2,
+      "git-tree": "d107cc8fbf9f898a6a3b19d58012ab7f8b2ec3a1",
+      "version-string": "chromium_7258"
+    }
+  ]
+}

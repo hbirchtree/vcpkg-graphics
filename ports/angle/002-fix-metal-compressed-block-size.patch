@@ -1,0 +1,11 @@
+--- a/src/libANGLE/renderer/metal/TextureMtl.mm
++++ b/src/libANGLE/renderer/metal/TextureMtl.mm
+@@ -587,7 +587,7 @@
+         const gl::InternalFormat &fmt = gl::GetSizedInternalFormatInfo(internalFormat);
+         MTLRegion newRegion           = region;
+         bytesPerRow =
+-            (region.size.width + fmt.compressedBlockWidth - 1) / fmt.compressedBlockWidth * 16;
++            (region.size.width + fmt.compressedBlockWidth - 1) / fmt.compressedBlockWidth * fmt.pixelBytes;
+         bytesPer2DImage = (region.size.height + fmt.compressedBlockHeight - 1) /
+                           fmt.compressedBlockHeight * bytesPerRow;
+         newRegion.size.width =
