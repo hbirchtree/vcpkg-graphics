@@ -38,10 +38,11 @@ string(COMPARE EQUAL "${VCPKG_LIBRARY_LINKAGE}" "static" ENABLE_STATIC)
 
 vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
     FEATURES
-        basisu  KTX_FEATURE_BASISU_ENCODE
-        tools   KTX_FEATURE_TOOLS
-        vulkan  KTX_FEATURE_VK_UPLOAD
-        write   KTX_FEATURE_WRITE_SUPPORT
+        basisu      KTX_FEATURE_BASISU_ENCODE
+        basisu_sse  BASISU_SUPPORT_SSE
+        tools       KTX_FEATURE_TOOLS
+        vulkan      KTX_FEATURE_VK_UPLOAD
+        write       KTX_FEATURE_WRITE_SUPPORT
 )
 
 vcpkg_cmake_configure(
